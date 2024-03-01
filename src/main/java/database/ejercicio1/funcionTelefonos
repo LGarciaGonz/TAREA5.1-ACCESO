@@ -1,0 +1,49 @@
+
+EJERCICIO 1: ------------------------------------------------------------------------------------------------------------------------------------
+
+ CREATE TYPE TELEFONO AS VARRAY(3) OF VARCHAR2(9);
+
+--------------------------------------------------------------------------------------------------------------
+
+ CREATE TABLE AGENDA(
+ NOMBRE VARCHAR2(15),
+ TELEF TELEFONO
+ );
+
+--------------------------------------------------------------------------------------------------------------
+
+ INSERT INTO AGENDA VALUES ('MANUEL', TELEFONO ('459876258', '468132658', '478921547'));
+ INSERT INTO AGENDA (NOMBRE, TELEF) VALUES ('MARTA', TELEFONO('854236145'))
+
+--------------------------------------------------------------------------------------------------------------
+
+DECLARE pv_nombre VARCHAR2(20);
+        vv_numero TELEFONO;
+BEGIN
+    pv_nombre := 'MANUEL';
+    SELECT A.TELEF INTO vv_numero FROM AGENDA A WHERE A.NOMBRE = pv_nombre;
+    IF (vv_numero IS null) THEN
+        DBMS_OUTPUT.PUT_LINE('No hay datos');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('Número de teléfono '||vv_numero(1));
+        /* RETURN ('Número de teléfono de '|| pv_nombre||': '|| vv_numero);*/
+    end if;
+end;
+
+--------------------------------------------------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION OBTENER_TELEF(pv_nombre IN VARCHAR2) RETURN VARCHAR2
+    AS
+    vv_telefono TELEFONO;
+BEGIN
+    SELECT A.TELEF INTO vv_telefono FROM AGENDA A WHERE A.NOMBRE = pv_nombre;
+
+    RETURN ('Número de teléfono de '|| pv_nombre||': '|| vv_telefono(1));
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        RETURN ('La persona no tiene teléfonos.');
+    WHEN TOO_MANY_ROWS THEN
+        RETURN ('Error: Demasiados resultados encontrados para la misma persona.');
+END;
+
+--------------------------------------------------------------------------------------------------------------

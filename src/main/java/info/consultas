@@ -1,0 +1,55 @@
+
+DECLARE pv_nombre VARCHAR2(20);
+        vv_ciudad VARCHAR2 (20);
+BEGIN
+    pv_nombre := 'Antonio Lopez';
+    SELECT A.ALUM.DIREC.CIUDAD INTO vv_ciudad FROM ALUMNOS2 A WHERE A.ALUM.NOMBRE = pv_nombre;
+    DBMS_OUTPUT.PUT_LINE('La ciudad es: ' || vv_ciudad);
+end;
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+INSERTAR ALUMNO:
+INSERT INTO ALUMNOS2 (ALUM) VALUES( PERSONA(2, 'Miguel Brand', DIRECCION('C/Mayor 12',null, 50180), '18/12/1989'));
+commit
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+create or replace FUNCTION FUN_VER_CIUDAD (pv_nombre VARCHAR2) RETURN VARCHAR2 AS
+        vv_ciudad VARCHAR2 (20);
+BEGIN
+    SELECT A.ALUM.DIREC.CIUDAD INTO vv_ciudad FROM ALUMNOS2 A WHERE A.ALUM.NOMBRE = pv_nombre;
+    IF (vv_ciudad IS null) THEN
+        vv_ciudad := 'Sin datos';
+        RETURN ('Sin datos');
+        ELSE
+        RETURN ('La ciudad de '|| pv_nombre||' es '|| vv_ciudad);
+    end if;
+end;
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+-- CREATE TYPE TELEFONO AS VARRAY(3) OF VARCHAR2(9);
+--
+-- CREATE TABLE AGENDA(
+-- NOMBRE VARCHAR2(15),
+-- TELEF TELEFONO
+-- );
+
+
+-- INSERT INTO AGENDA VALUES ('MANUEL', TELEFONO ('459876258', '468132658', '478921547'));
+-- INSERT INTO AGENDA (NOMBRE, TELEF) VALUES ('MARTA', TELEFONO('854236145'))
+
+
+DECLARE pv_nombre VARCHAR2(20);
+        vv_numero TELEFONO;
+BEGIN
+    pv_nombre := 'MANUEL';
+    SELECT A.TELEF INTO vv_numero FROM AGENDA A WHERE A.NOMBRE = pv_nombre;
+    IF (vv_numero IS null) THEN
+        DBMS_OUTPUT.PUT_LINE('No hay datos');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('Número de teléfono '||vv_numero(1));
+        /* RETURN ('Número de teléfono de '|| pv_nombre||': '|| vv_numero);*/
+    end if;
+end;
